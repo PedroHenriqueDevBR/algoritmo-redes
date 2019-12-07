@@ -1,105 +1,112 @@
-def main():
-    msize = int(input('Digite o tamanho da mensagem: '))
-    mess = []
-    print('Digite a mensagem: ')
-    for i in range(msize):
-        mess.append(int(input('Digite o {}º bit: '.format(i+1))))
-
-    dsize = int(input('Digite o tamanho do divisor: '))
-    div = []
-    for i in range(dsize):
-        div.append(int(input('Digite o {}º bit: '.format(i+1))))
-
-    print()
-    print('A mensagem digitada foi: ', end='')
-    for i in range(msize):
-        print(mess[i], end='')
-    print()
-
-    print('O divisor digitado foi: ', end='')
-    for i in range(dsize):
-        print(div[i], end='')
-    print()
-
-    for i in range(dsize):
-        mess.append(0)
-
-    msize = (msize + dsize) - 1
-
-    print()
-    print('A nova mensagem é: ', end='')
-    for i in range(msize):
-        print(mess[i], end='')
-    print()
-
-    res = []
-    rsize = msize
-    for i in range(msize):
-        res.append(mess[i])
-
-    n = 0
-    for i in range(dsize):
-        res[i] = mess[i]^div[i] # XOR
-        n = i
-
-    m = 0
-    flag = 0
-    count = 0
-    k = 0
-    rem = [0] * (dsize)
-    while n <= msize:
-        while flag == 0:
-            if res[m] == 0:
-                m += 1
-            else:
-                flag = 1
-        flag = 0
-
-        for i in range(m, dsize + m):
-            if res[i] == 0 or res[i] == 1:
-                count += 1
+class CRC:
+    def __init__(self, tamanho):
+        self.frame_check_sequence = [-1] * tamanho
+        self.final_message = [-1] * tamanho
+        self.generator = [-1] * tamanho
+        self.rest = [-1] * tamanho
         
+        self.remainder_size = 0
+        self.generator_size = 0
+        self.message_size = 0
+
+    def getData(self):
+        message = input("Enter the message (Ex. 11001): ")
+        self.message_size = len(message)
+        for i in range(self.message_size):
+            self.final_message[i] = int(message[i])
+
+        gen = input("Enter the generator (Ex. 1011): ")
+        self.generator_size = len(gen)
+        for i in range(self.generator_size):
+            self.generator[i] = int(gen[i])
+
+    def showData(self):
+        print("\nEntered message: ", end='')
+        for i in range(self.message_size):
+            print(self.final_message[i], end='')
         print()
-        print('count: ', count)
-        
-        if count == dsize:
-            for i in range(m, dsize + m):
-                res[i] = res[i]^div[k]
-                k += 1
-            k = 0
-        else:
-            break
+
+        print("Entered generator: ", end='')
+        for i in range(self.generator_size):
+            print(self.generator[i], end='')
+        print()
+
+    def convert(self):
+        bits_to_right = 0
+        lenght = 0
         count = 0
-        n = (dsize + m) + 1
-        print()
-        for i in range(msize):
-            print(res[i], end='')
-        print()
+        j = 0
 
-    rsize = msize - 1
+        for i in range(self.message_size, self.message_size + self.generator_size):
+            self.final_message[i] = 0
 
-    for i in range(1, dsize):
-        mess[rsize] = res[rsize]
-        rsize -= 1
+        self.message_size = (self.message_size + self.generator_size) - 1
 
-    print()
-    print('CRC gerado: ', end='')
-    for i in range(msize):
-        print(mess[i], end='')
-    print()
+        print("\nNew message: ", end='')
+        for i in range(self.message_size):
+            print(self.final_message[i], end='')
+        
+        self.remainder_size = self.message_size
+        for i in range(self.message_size):
+            self.rest[i] = self.final_message[i]
 
-    rsize = msize - 1
+        for i in range(self.generator_size):
+            self.rest[i] = self.final_message[i]^self.generator[i]
+            lenght = i
 
-    for i in range(dsize - 1, 0, -1):
-        rem[i] = res[rsize]
-        rsize -= 1
+        while lenght <= self.message_size:
+            while True:
+                if self.rest[bits_to_right] == 0:
+                    bits_to_right += 1
+                else:
+                    break
 
-    print()
-    print('Resto: ', end='')
-    for i in range(1, dsize):
-        print(rem[i], end='')
-    print()
+            for i in range(bits_to_right, self.generator_size + bits_to_right):
+                # if self.rest[i] == 0 or self.rest[i] == 1:
+                if self.rest[i] != -1:
+                    count += 1
 
+            print("\nCount: ", count)
+            if count == self.generator_size:
+                for i in range(bits_to_right, self.generator_size + bits_to_right):
+                    self.rest[i] = self.rest[i]^self.generator[j]
+                    j += 1
+                j = 0
+            else:
+                break
+
+            count = 0
+            lenght = (self.generator_size + bits_to_right) + 1
+
+            for i in range(self.message_size):
+                print(self.rest[i], end='')
+            
+        self.remainder_size = self.message_size - 1
+
+        for i in range(1, self.generator_size):
+            self.final_message[self.remainder_size] = self.rest[self.remainder_size]
+            self.remainder_size -= 1
+
+        print("\nCRC generated: ", end='')
+        for i in range(self.message_size):
+            print(self.final_message[i], end='')
+        
+        self.remainder_size = self.message_size - 1
+
+        for i in range(self.generator_size - 1, 0, -1):
+            self.frame_check_sequence[i] = self.rest[self.remainder_size]
+            self.remainder_size -= 1
+        
+        print("\nframe check sequence: ", end='')
+        for i in range(1, self.generator_size):
+            print(self.frame_check_sequence[i], end='')
+
+
+def main():
+    crc = CRC(20)
+    crc.getData()
+    crc.showData()
+    crc.convert()
 
 if __name__ == "__main__":
     main()
