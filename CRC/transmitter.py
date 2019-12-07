@@ -1,4 +1,4 @@
-class CRC:
+class CRC_transmitter:
     def __init__(self):
         self.frame_check_sequence = []
         self.final_message = []
@@ -139,10 +139,10 @@ class CRC:
 
 
 def main():
-    crc = CRC()
-    crc.getData()
-    crc.showData()
-    crc.convert()
+    transmitter = CRC_transmitter()
+    transmitter.getData()
+    transmitter.showData()
+    transmitter.convert()
 
 if __name__ == "__main__":
     main()
