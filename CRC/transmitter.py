@@ -87,32 +87,34 @@ class CRC_transmitter:
 
         while lenght <= self.message_size:
             while True:
-                if len(self.rest) == 1:
-                    break
-                else:
-                    if self.rest[bits_to_right] == 0:
-                        bits_to_right += 1
-                    else:
+                if self.rest[bits_to_right] == 0:
+                    bits_to_right += 1
+                    if bits_to_right >= len(self.rest):
                         break
+                else:
+                    break
 
-            for i in range(bits_to_right, self.generator_size + bits_to_right):
-                if self.rest[i] == 0 or self.rest[i] == 1:
-                    count += 1
-
-            print("\nCount: ", count)
-            if count == self.generator_size:
-                for i in range(bits_to_right, self.generator_size + bits_to_right):
-                    self.rest[i] = self.rest[i]^self.generator[j]
-                    j += 1
-                j = 0
-            else:
+            if bits_to_right >= len(self.rest):
                 break
+            else:
+                for i in range(bits_to_right, self.generator_size + bits_to_right):
+                    if self.rest[i] == 0 or self.rest[i] == 1:
+                        count += 1
 
-            count = 0
-            lenght = (self.generator_size + bits_to_right) + 1
+                print("\nCount: ", count)
+                if count == self.generator_size:
+                    for i in range(bits_to_right, self.generator_size + bits_to_right):
+                        self.rest[i] = self.rest[i]^self.generator[j]
+                        j += 1
+                    j = 0
+                else:
+                    break
 
-            for i in range(self.message_size):
-                print(self.rest[i], end='')
+                count = 0
+                lenght = (self.generator_size + bits_to_right) + 1
+
+                for i in range(self.message_size):
+                    print(self.rest[i], end='')
             
         self.remainder_size = self.message_size - 1
 
