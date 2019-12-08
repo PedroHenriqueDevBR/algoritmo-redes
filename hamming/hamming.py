@@ -7,10 +7,25 @@ class Hamming:
         self.word_distributed = []
         self.verify_positions = dict()
         self.calculated_position = dict()
+        self.error_counter = 0
+        self.error_position = 0
+        self.verifiers_received = []
+
 
     def word_generate(self):
         self.word_distributer()
+        self.aply_hamming()
 
+    def check_word(self):
+        for bit in self.word:
+            self.word_distributed.append(int(bit))
+
+        self.make_checkers_null()
+        self.aply_hamming()
+        self.compare_checkers()
+
+    
+    def aply_hamming(self):
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is not None:
@@ -19,17 +34,39 @@ class Hamming:
         for verify in self.checkers:
             self.verify_positions[verify] = self.number_has_verify(verify)
 
-        # Todo: Falta só isso
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is None:
                 position = i + 1
-                response = self.parity_calculated(self.checkers[position])
+                response = self.parity_calculated(position)
                 self.word_distributed[i] = response
+
+    
+    def make_checkers_null(self):
+        for i in range(len(self.word_distributed)):
+            position = i + 1
+            if self.is_verify(position):
+                self.verifiers_received.append(int(self.word[i]))
+                self.checkers.append(position)
+                self.word_distributed[i] = None
+
+
+    def compare_checkers(self):
+        aux_checkers = []
+
+        for i in range(len(self.word_distributed)):
+            position = i + 1
+            if position in self.checkers:
+                aux_checkers.append(self.word_distributed[i])
+
+        for i in range(len(aux_checkers)):
+            if aux_checkers[i] != self.verifiers_received[i]:
+                self.error_counter += 1
+                self.error_position += pow(2, i)
 
 
     def parity_calculated(self, verify):
-        positions_bits = [] #bits_das_posicoes = []
+        positions_bits = []
         positions_of_verify = self.verify_positions[verify]
         count = 0
 
@@ -45,7 +82,7 @@ class Hamming:
                 count += 1
 
         if self.parity == 'even':
-            if count % 2 == 0:  # Deu par
+            if count % 2 == 0:
                 return 0
             else:
                 return 1
@@ -57,9 +94,9 @@ class Hamming:
 
 
     def calculate_verity(self, number):
-        aux_checkers = [] # aux_verificadores
-        result = [] # resultado
-        sum_number = 0 # soma
+        aux_checkers = []
+        result = []
+        sum_number = 0
 
         for verify in self.checkers:
             if verify < number:
@@ -101,24 +138,3 @@ class Hamming:
         while number >= 1 and number % 2 == 0:
             number /= 2
         return number == 1
-
-
-
-
-'''
- Tesntando a classe Hamming, não faça isso em casa, seja organizado
-'''
-
-def main():
-    # Palavra exemplo
-    # palavra = '1000111001'
-
-    word = '1000111001'
-    parity = 'odd'
-
-    hamming = Hamming(word, parity)
-    hamming.word_generate()
-
-
-if __name__ == '__main__':
-    main()
