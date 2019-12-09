@@ -35,73 +35,77 @@
 
     <div class="response">
 
-        {% if type == 'receive' %}
-            <table border="1" >
-                <caption>resultado</caption>
-                <tr class="head">
-                    {% for item in word_generated %}
-                    <td>{{item.index}}</td>
-                    {% endfor %}
-                </tr>
-
-                <tr>
-                    {% for item in word_generated %}
-                        {% if item.index in checkers %}
-                            <td class="parity">{{ item.value }}</td>
-                        {% else %}
-                            <td>{{ item.value }}</td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
-            </table>
-
-            <br>
-
-            {% if error_counter > 0 %}
-                <h3 class="parity">Palavra incorreta</h3>
-                <h4 class="parity">Erro localizado na casa {{ error_position }}</h4>
-            {% else %}
-                <h3 class="parity">Palavra correta</h3>
-            {% endif %}
-
-        {% else %}
-            <table border="1" >
-                <caption>resultado</caption>
-                <tr class="head">
-                    {% for item in word_generated %}
-                    <td>{{item.index}}</td>
-                    {% endfor %}
-                </tr>
-
-                <tr>
-                    {% for item in word_generated %}
-                        {% if item.index in checkers %}
-                            <td class="parity">{{ item.value }}</td>
-                        {% else %}
-                            <td>{{ item.value }}</td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
-            </table>
-
-
-            <!-- Bits referentes a suas posicões -->
-
-            {% for item in verify_positions %}
+        {% if worked %}
+            {% if type == 'receive' %}
                 <table border="1" >
-                    <caption>Bit {{ item.bit }}</caption>
+                    <caption>resultado</caption>
                     <tr class="head">
-                        {% for position in item.positions %}
-                            <td>{{ position.position }}</td>
+                        {% for item in word_generated %}
+                        <td>{{item.index}}</td>
                         {% endfor %}
                     </tr>
+
                     <tr>
-                        {% for position in item.positions %}
-                            <td>{{ position.value }}</td>
+                        {% for item in word_generated %}
+                            {% if item.index in checkers %}
+                                <td class="parity">{{ item.value }}</td>
+                            {% else %}
+                                <td>{{ item.value }}</td>
+                            {% endif %}
                         {% endfor %}
                     </tr>
                 </table>
-            {% endfor %}
+
+                <br>
+
+                {% if error_counter > 0 %}
+                    <h3 class="parity">Palavra incorreta</h3>
+                    <h4 class="parity">Erro localizado na casa {{ error_position }}</h4>
+                {% else %}
+                    <h3 class="parity">Palavra correta</h3>
+                {% endif %}
+
+            {% else %}
+                <table border="1" >
+                    <caption>resultado</caption>
+                    <tr class="head">
+                        {% for item in word_generated %}
+                        <td>{{item.index}}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        {% for item in word_generated %}
+                            {% if item.index in checkers %}
+                                <td class="parity">{{ item.value }}</td>
+                            {% else %}
+                                <td>{{ item.value }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </table>
+
+
+                <!-- Bits referentes a suas posicões -->
+
+                {% for item in verify_positions %}
+                    <table border="1" >
+                        <caption>Bit {{ item.bit }}</caption>
+                        <tr class="head">
+                            {% for position in item.positions %}
+                                <td>{{ position.position }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for position in item.positions %}
+                                <td>{{ position.value }}</td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            <h1>^_^</h1>
         {% endif %}
         
     </div>

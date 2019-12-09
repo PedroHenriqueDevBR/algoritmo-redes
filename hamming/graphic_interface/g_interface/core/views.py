@@ -14,18 +14,19 @@ def index(request):
         data['type'] = request_type
 
         if request_type == 'send':
-            hamming.word_generate()
+            it_worked = hamming.word_generate()
             data['word_generated'] = format_word_generated(hamming.word_distributed)
             data['verify_positions'] = format_verify_positions(hamming.verify_positions, hamming.word_distributed)
             data['checkers'] = hamming.checkers
             data['word'] = ''.join(str(v) for v in hamming.word_distributed)
-
+            data['worked'] = it_worked
         else:
-            hamming.check_word()
+            it_worked = hamming.check_word()
             data['word_generated'] = format_word_generated(hamming.word_distributed)
             data['error_counter'] = hamming.error_counter
             data['error_position'] = hamming.error_position
             data['checkers'] = [hamming.error_position]
+            data['worked'] = it_worked
             # set_trace()
 
         return render(request, 'index.html', data)
@@ -73,35 +74,54 @@ class Hamming:
         self.error_counter = 0
         self.error_position = 0
         self.verifiers_received = []
+    
+
+    def data_validation(self):
+        if len(self.word) == 0:
+            return False
+        for bit in self.word:
+            if bit != '0' and bit != '1':
+                return False
+        if self.parity != 'odd' and self.parity != 'even':
+            return False
+
+        return True
 
 
     def word_generate(self):
-        self.word_distributer()
-        self.aply_hamming()
+        if self.data_validation():
+            self.word_distributer() # 1001 = |V|V|1|V|0|0|1|
+            self.aply_hamming()
+            return True
+        return False
+
 
     def check_word(self):
-        for bit in self.word:
-            self.word_distributed.append(int(bit))
+        if self.data_validation():
+            for bit in self.word:
+                self.word_distributed.append(int(bit))
 
-        self.make_checkers_null()
-        self.aply_hamming()
-        self.compare_checkers()
+            self.make_checkers_null() # 1011001 = |V|V|1|V|0|0|1|
+            self.aply_hamming()
+            self.compare_checkers()
+            return True
+        return False
 
     
     def aply_hamming(self):
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is not None:
-                self.calculate_verity(i + 1)
+                self.calculate_verity(i + 1) # EX: '11' = 8 + 2 + 1
 
         for verify in self.checkers:
-            self.verify_positions[verify] = self.number_has_verify(verify)
+            self.verify_positions[verify] = self.number_has_verify(verify) # EX: '1' = 3, 5, 7, 11, 13
 
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is None:
                 position = i + 1
-                response = self.parity_calculated(position)
+                response = self.parity_calculated(position) # bit 1 = 0, bit 2 = 1, bit 4 = 0, bit 8 = 1
                 self.word_distributed[i] = response
 
     
