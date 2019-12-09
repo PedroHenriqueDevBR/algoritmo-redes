@@ -92,7 +92,6 @@ class CRC_receptor:
                 for i in range(bits_to_right, self.generator_size + bits_to_right):
                     count += 1
 
-                print("\nCount: ", count)
                 if count == self.generator_size:
                     for i in range(bits_to_right, self.generator_size + bits_to_right):
                         self.rest[i] = self.rest[i]^self.generator[j]
@@ -103,9 +102,6 @@ class CRC_receptor:
 
                 count = 0
                 lenght = (self.generator_size + bits_to_right) + 1
-
-                for i in range(self.message_size):
-                    print(self.rest[i], end='')
             
         self.remainder_size = self.message_size - 1
 
@@ -115,7 +111,7 @@ class CRC_receptor:
             self.remainder[i] = self.rest[self.remainder_size]
             self.remainder_size -= 1
         
-        print("\n\nRemainder is: ", end='')
+        print("\nRemainder is: ", end='')
         for i in range(self.generator_size - 1):
             print(self.remainder[i], end='')
             if self.remainder[i] == 1:

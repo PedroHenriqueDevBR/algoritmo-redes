@@ -100,7 +100,6 @@ class CRC_transmitter:
                 for i in range(bits_to_right, self.generator_size + bits_to_right):
                     count += 1
 
-                print("\nCount: ", count)
                 if count == self.generator_size:
                     for i in range(bits_to_right, self.generator_size + bits_to_right):
                         self.rest[i] = self.rest[i]^self.generator[j]
@@ -111,9 +110,6 @@ class CRC_transmitter:
 
                 count = 0
                 lenght = (self.generator_size + bits_to_right) + 1
-
-                for i in range(self.message_size):
-                    print(self.rest[i], end='')
             
         self.remainder_size = self.message_size - 1
 
