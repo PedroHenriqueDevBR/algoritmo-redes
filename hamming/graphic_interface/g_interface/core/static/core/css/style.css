@@ -1,0 +1,98 @@
+@font-face {
+    font-family: 'press_start';
+    src: url('../fonts/PressStart2P-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'press_start', cursive;
+}
+
+html, body {
+    background: #263238;
+}
+
+.header {
+    width: 100%;
+    text-align: center;
+    padding: 50px 0;
+    color: #FF9800;
+}
+
+.data-form {
+    width: 40%;
+    height: fit-content;
+    margin-left: 30%;
+    border: 1px solid #fff;
+    text-align: center;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+input, select {
+    color: #fff;
+    background: #263238;
+    border: 1px solid #fff;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    width: 100%;
+}
+
+select {
+    background: #FF7043;
+    border: none;
+}
+
+.btn {
+    width: 50%;
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    transition: 300ms;
+}
+.btn:hover {
+    background: #FF9800;
+    color: #fff;
+}
+
+.response {
+    width: 40%;
+    height: fit-content;
+    margin: 10px 30%;
+    text-align: center;
+    border-radius: 15px;
+    padding: 15px;
+    color: #fff;
+}
+
+caption {
+    margin: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: #FF7043;
+}
+
+td {
+    padding: 5px;
+}
+
+.head {
+    color: #FF7043;
+}
+.parity {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+h2, h4 {
+    margin: 10px;
+}

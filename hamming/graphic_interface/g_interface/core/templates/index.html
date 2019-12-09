@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hamming</title>
+    <link rel="stylesheet" href="{% static '/core/css/style.css' %}">
+</head>
+<body>
+
+    <div class="header">
+        <h1>Algoritmo de Hamming</h1>
+    </div>
+
+    <div class="data-form">
+        <form method="POST"> {% csrf_token %}
+            <input type="text" name="word" value="{% if word %}{{ word }}{% else %}1000111001{% endif %}">
+
+            <select name="parity">
+                <option value="even">Par</option>
+                <option value="odd">Ímpar</option>
+            </select>
+            
+            <select name="type">
+                <option value="send">Enviar</option>
+                <option value="receive">Receber</option>
+            </select>
+            
+            <button type="submit" class="btn">Calcular</button>
+        </form>
+    </div>
+
+    <div class="response">
+
+        {% if type == 'receive' %}
+            <table border="1" >
+                <caption>resultado</caption>
+                <tr class="head">
+                    {% for item in word_generated %}
+                    <td>{{item.index}}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    {% for item in word_generated %}
+                        {% if item.index in checkers %}
+                            <td class="parity">{{ item.value }}</td>
+                        {% else %}
+                            <td>{{ item.value }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+
+            <br>
+
+            {% if error_counter > 0 %}
+                <h3 class="parity">Palavra incorreta</h3>
+                <h4 class="parity">Erro localizado na casa {{ error_position }}</h4>
+            {% else %}
+                <h3 class="parity">Palavra correta</h3>
+            {% endif %}
+
+        {% else %}
+            <table border="1" >
+                <caption>resultado</caption>
+                <tr class="head">
+                    {% for item in word_generated %}
+                    <td>{{item.index}}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    {% for item in word_generated %}
+                        {% if item.index in checkers %}
+                            <td class="parity">{{ item.value }}</td>
+                        {% else %}
+                            <td>{{ item.value }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+
+
+            <!-- Bits referentes a suas posicões -->
+
+            {% for item in verify_positions %}
+                <table border="1" >
+                    <caption>Bit {{ item.bit }}</caption>
+                    <tr class="head">
+                        {% for position in item.positions %}
+                            <td>{{ position.position }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for position in item.positions %}
+                            <td>{{ position.value }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            {% endfor %}
+        {% endif %}
+        
+    </div>
+    
+</body>
+</html>
