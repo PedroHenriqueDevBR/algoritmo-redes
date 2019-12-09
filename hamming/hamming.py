@@ -157,25 +157,3 @@ class Hamming:
         while number >= 1 and number % 2 == 0:
             number /= 2
         return number == 1
-
-def main():
-    word = '0'
-    parity = 'even'
-
-    hamming = Hamming(word, parity)
-
-    if hamming.check_word():
-        print('os dados estão válidos')
-        print('Palavra distribuida')
-        print(hamming.word_distributed)
-        print('Verificadores')
-        print(hamming.checkers)
-        print('Total de erros')
-        print(hamming.error_counter)
-        print('Posição do erro')
-        print(hamming.error_position)
-    else:
-        print('dados inválidos')
-
-if __name__ == '__main__':
-    main()
