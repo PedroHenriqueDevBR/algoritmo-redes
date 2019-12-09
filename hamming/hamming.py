@@ -10,35 +10,54 @@ class Hamming:
         self.error_counter = 0
         self.error_position = 0
         self.verifiers_received = []
+    
+
+    def data_validation(self):
+        if len(self.word) == 0:
+            return False
+        for bit in self.word:
+            if bit != '0' and bit != '1':
+                return False
+        if self.parity != 'odd' and self.parity != 'even':
+            return False
+
+        return True
 
 
     def word_generate(self):
-        self.word_distributer()
-        self.aply_hamming()
+        if self.data_validation():
+            self.word_distributer() # 1001 = |V|V|1|V|0|0|1|
+            self.aply_hamming()
+            return True
+        return False
+
 
     def check_word(self):
-        for bit in self.word:
-            self.word_distributed.append(int(bit))
+        if self.data_validation():
+            for bit in self.word:
+                self.word_distributed.append(int(bit))
 
-        self.make_checkers_null()
-        self.aply_hamming()
-        self.compare_checkers()
+            self.make_checkers_null() # 1011001 = |V|V|1|V|0|0|1|
+            self.aply_hamming()
+            self.compare_checkers()
+            return True
+        return False
 
     
     def aply_hamming(self):
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is not None:
-                self.calculate_verity(i + 1)
+                self.calculate_verity(i + 1) # EX: '11' = 8 + 2 + 1
 
         for verify in self.checkers:
-            self.verify_positions[verify] = self.number_has_verify(verify)
+            self.verify_positions[verify] = self.number_has_verify(verify) # EX: '1' = 3, 5, 7, 11, 13
 
         for i in range(len(self.word_distributed)):
             bit = self.word_distributed[i]
             if bit is None:
                 position = i + 1
-                response = self.parity_calculated(position)
+                response = self.parity_calculated(position) # bit 1 = 0, bit 2 = 1, bit 4 = 0, bit 8 = 1
                 self.word_distributed[i] = response
 
     
@@ -138,3 +157,25 @@ class Hamming:
         while number >= 1 and number % 2 == 0:
             number /= 2
         return number == 1
+
+def main():
+    word = '0'
+    parity = 'even'
+
+    hamming = Hamming(word, parity)
+
+    if hamming.check_word():
+        print('os dados estão válidos')
+        print('Palavra distribuida')
+        print(hamming.word_distributed)
+        print('Verificadores')
+        print(hamming.checkers)
+        print('Total de erros')
+        print(hamming.error_counter)
+        print('Posição do erro')
+        print(hamming.error_position)
+    else:
+        print('dados inválidos')
+
+if __name__ == '__main__':
+    main()
