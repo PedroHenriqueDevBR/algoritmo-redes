@@ -14,7 +14,7 @@ class CRC_transmitter:
         wrong = False
 
         while True:
-            message = input("Enter the message (Ex. 11001): ")
+            message = input("Enter the message (Ex. 10011101): ")
             if len(message) == 0:
                 wrong = True
             else:
@@ -31,7 +31,7 @@ class CRC_transmitter:
                 wrong = False
 
         while True:
-            gen = input("Enter the generator (Ex. 1011): ")
+            gen = input("Enter the generator (Ex. 1001): ")
             if len(gen) == 0:
                 wrong = True
             else:
@@ -94,14 +94,12 @@ class CRC_transmitter:
                 else:
                     break
 
-            if bits_to_right >= len(self.rest):
+            if self.generator_size + bits_to_right > len(self.rest):
                 break
             else:
                 for i in range(bits_to_right, self.generator_size + bits_to_right):
-                    if self.rest[i] == 0 or self.rest[i] == 1:
-                        count += 1
+                    count += 1
 
-                print("\nCount: ", count)
                 if count == self.generator_size:
                     for i in range(bits_to_right, self.generator_size + bits_to_right):
                         self.rest[i] = self.rest[i]^self.generator[j]
@@ -112,9 +110,6 @@ class CRC_transmitter:
 
                 count = 0
                 lenght = (self.generator_size + bits_to_right) + 1
-
-                for i in range(self.message_size):
-                    print(self.rest[i], end='')
             
         self.remainder_size = self.message_size - 1
 

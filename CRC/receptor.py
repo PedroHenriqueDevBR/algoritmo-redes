@@ -14,7 +14,7 @@ class CRC_receptor:
         wrong = False
 
         while True:
-            message = input("Enter the CRC message (Ex. 11001): ")
+            message = input("Enter the CRC message (Ex. 10011101100): ")
             if len(message) == 0:
                 wrong = True
             else:
@@ -31,7 +31,7 @@ class CRC_receptor:
                 wrong = False
 
         while True:
-            gen = input("Enter the generator (Ex. 1011): ")
+            gen = input("Enter the generator (Ex. 1001): ")
             if len(gen) == 0 or len(gen) > self.message_size:
                 wrong = True
             else:
@@ -86,14 +86,12 @@ class CRC_receptor:
                 else:
                     break
 
-            if bits_to_right >= len(self.rest):
+            if self.generator_size + bits_to_right > len(self.rest):
                 break
             else:
                 for i in range(bits_to_right, self.generator_size + bits_to_right):
-                    if self.rest[i] == 0 or self.rest[i] == 1:
-                        count += 1
+                    count += 1
 
-                print("\nCount: ", count)
                 if count == self.generator_size:
                     for i in range(bits_to_right, self.generator_size + bits_to_right):
                         self.rest[i] = self.rest[i]^self.generator[j]
@@ -104,9 +102,6 @@ class CRC_receptor:
 
                 count = 0
                 lenght = (self.generator_size + bits_to_right) + 1
-
-                for i in range(self.message_size):
-                    print(self.rest[i], end='')
             
         self.remainder_size = self.message_size - 1
 
@@ -116,7 +111,7 @@ class CRC_receptor:
             self.remainder[i] = self.rest[self.remainder_size]
             self.remainder_size -= 1
         
-        print("\n\nRemainder is: ", end='')
+        print("\nRemainder is: ", end='')
         for i in range(self.generator_size - 1):
             print(self.remainder[i], end='')
             if self.remainder[i] == 1:
