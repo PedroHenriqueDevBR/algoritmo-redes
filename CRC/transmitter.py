@@ -15,27 +15,27 @@ class CRC_transmitter:
 
         while True:
             message = input("Enter the message (Ex. 10011101): ")
-            if len(message) == 0:
+            if len(message) == 0:  # message is empty
                 wrong = True
             else:
                 for i in range(len(message)):
-                    if message[i] not in ['0', '1']:
+                    if message[i] not in ['0', '1']:  # characters that are not 0 or 1
                         wrong = True
             if not wrong:
                 self.message_size = len(message)
                 for i in range(self.message_size):
-                    self.final_message.append(int(message[i]))
+                    self.final_message.append(int(message[i]))  # creates a list of int from message
                 break
             else:
                 print("Message is wrong!")
-                wrong = False
+                wrong = False  # reset 'wrong' variable
 
         while True:
             gen = input("Enter the generator (Ex. 1001): ")
             if len(gen) == 0:
                 wrong = True
             else:
-                if gen[0] != '1' or gen[-1] != '1':
+                if gen[0] != '1' or gen[-1] != '1':  # if it doesn't start at 1 or doesn't end at 1
                     wrong = True
                 for i in range(len(gen)):
                     if gen[i] not in ['0', '1']:
@@ -69,20 +69,19 @@ class CRC_transmitter:
         j = 0
 
         for i in range(self.message_size, self.message_size + self.generator_size):
-            self.final_message.append(0)
+            self.final_message.append(0)  # adds '0's bits at ends of list
 
-        self.message_size = (self.message_size + self.generator_size) - 1
+        self.message_size = (self.message_size + self.generator_size) - 1  # increment in message size
 
         print("\nNew message: ", end='')
         for i in range(self.message_size):
             print(self.final_message[i], end='')
-        
-        self.remainder_size = self.message_size
+
         for i in range(self.message_size):
-            self.rest.append(self.final_message[i])
+            self.rest.append(self.final_message[i])  # rest list received message bits
 
         for i in range(self.generator_size):
-            self.rest[i] = self.final_message[i]^self.generator[i]
+            self.rest[i] = self.final_message[i]^self.generator[i]  # rest switches his bits to first XOR result from message and generator
             lenght = i
 
         while lenght <= self.message_size:
@@ -94,7 +93,7 @@ class CRC_transmitter:
                 else:
                     break
 
-            if self.generator_size + bits_to_right > len(self.rest):
+            if self.generator_size + bits_to_right > len(self.rest):  # if it exceeds the size of the rest
                 break
             else:
                 for i in range(bits_to_right, self.generator_size + bits_to_right):
@@ -112,15 +111,12 @@ class CRC_transmitter:
                 lenght = (self.generator_size + bits_to_right) + 1
             
         self.remainder_size = self.message_size - 1
-
         for i in range(1, self.generator_size):
-            self.final_message[self.remainder_size] = self.rest[self.remainder_size]
+            self.final_message[self.remainder_size] = self.rest[self.remainder_size]  # change the last bits of the message
             self.remainder_size -= 1
         
         self.remainder_size = self.message_size - 1
-
         self.frame_check_sequence = [-1] * (self.generator_size - 1)
-
         for i in range(len(self.frame_check_sequence) - 1, - 1, - 1):
             self.frame_check_sequence[i] = self.rest[self.remainder_size]
             self.remainder_size -= 1

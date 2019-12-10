@@ -32,7 +32,7 @@ class CRC_receptor:
 
         while True:
             gen = input("Enter the generator (Ex. 1001): ")
-            if len(gen) == 0 or len(gen) > self.message_size:
+            if len(gen) == 0 or len(gen) > self.message_size:  # if message size is smaller than generator size or generator is empty
                 wrong = True
             else:
                 if gen[0] != '1' or gen[-1] != '1':
@@ -69,7 +69,6 @@ class CRC_receptor:
         error = False
         j = 0
 
-        self.remainder_size = self.message_size
         for i in range(self.message_size):
             self.rest.append(self.crc_message[i])
 
@@ -104,9 +103,7 @@ class CRC_receptor:
                 lenght = (self.generator_size + bits_to_right) + 1
             
         self.remainder_size = self.message_size - 1
-
         self.remainder = [-1] * (self.generator_size - 1)
-
         for i in range(len(self.remainder) - 1, - 1, - 1):
             self.remainder[i] = self.rest[self.remainder_size]
             self.remainder_size -= 1
